@@ -3,6 +3,8 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { AuthContext } from '../providers/AuthProvider'
 import axios from 'axios'
+import Swal from 'sweetalert2'
+import 'animate.css';
 
 const AddJob = () => {
   const { user } = useContext(AuthContext)
@@ -35,9 +37,42 @@ const AddJob = () => {
     // make a post request 
     try {
       const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/recruiter/add-job`, formData)
-    console.log(data)
+      console.log(data)
+      form.reset();
+      if (data.insertedId) {
+        Swal.fire({
+          title: "Job Posted Successfully!",
+          text: "You will be redirected to your posted jobs.",
+          showClass: {
+            popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+          `
+          },
+          hideClass: {
+            popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+          `
+          },
+          willClose: () => { window.location.href = '/my-posted-jobs'; }
+        });
+      }
     } catch (error) {
       console.error("Error submitting form data:", error);
+      Swal.fire({
+        title: "Error",
+        text: "There was an error submitting the job. Please try again.",
+        icon: "error",
+        showClass: {
+          popup: ` animate__animated animate__shakeX animate__faster `
+        },
+        hideClass: {
+          popup: ` animate__animated animate__fadeOutDown animate__faster `
+        }
+      });
     }
   }
 
