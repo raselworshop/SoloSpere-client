@@ -10,7 +10,7 @@ const Registration = () => {
   const { signInWithGoogle, createUser, updateUserProfile, setUser } =
     useContext(AuthContext)
 
-  const handleSignUp = async e => {
+  const handleSignUp = async (e) => {
     e.preventDefault()
     const form = e.target
     const email = form.email.value
