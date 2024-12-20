@@ -15,7 +15,7 @@ const JobCard = ({ job }) => {
   } = job || {};
   return (
     <Link
-      to={`/job/1`}
+      to={`/job/${job._id}`}
       className='w-full max-w-sm px-4 py-3 bg-white rounded-md shadow-md hover:scale-[1.05] transition-all'
     >
       <div className='flex items-center justify-between'>
