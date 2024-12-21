@@ -53,7 +53,8 @@ const JobDetails = () => {
     const email = user?.email;
     const bidDeadline = startDate;
     const bidId = _id;
-    const placedBid = { price, comment, email, bidDeadline, bidId }
+    const buyerEmail = buyer?.email;
+    const placedBid = { title, buyerEmail, category, price, comment, email, bidDeadline, bidId, status: 'pending' }
 
     // check bid validation permissions 
     if (user?.email === buyer.email) {
