@@ -10,6 +10,7 @@ import {
   updateProfile,
 } from 'firebase/auth'
 import auth from '../firebase/firebase.config';
+import axios from 'axios';
 
 export const AuthContext = createContext(null)
 const googleProvider = new GoogleAuthProvider()
@@ -30,7 +31,7 @@ const AuthProvider = ({ children }) => {
 
   const signInWithGoogle = () => {
     setLoading(true)
-    return signInWithPopup(auth , googleProvider)
+    return signInWithPopup(auth, googleProvider)
   }
 
   const logOut = async () => {
@@ -47,10 +48,20 @@ const AuthProvider = ({ children }) => {
 
   // onAuthStateChange
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, currentUser => {
-      setUser(currentUser)
+    const unsubscribe = onAuthStateChanged(auth, async currentUser => {
+      if (currentUser?.email) {
+        setUser(currentUser)
+        // generate token 
+        const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/jwt`, { email: currentUser?.email }, {withCredentials: true})
+        console.log(data, "user token is cteated")
+        setLoading(false)
+      }else{
+        setUser(currentUser)
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/logout`, {withCredentials: true})
+        console.log(data, "user token is cleared")
+        setLoading(false)
+      }
       console.log('CurrentUser-->', currentUser)
-      setLoading(false)
     })
     return () => {
       return unsubscribe()
