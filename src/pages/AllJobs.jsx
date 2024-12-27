@@ -5,12 +5,15 @@ import axios from 'axios';
 
 const AllJobs = () => {
   const [jobs, setJobs] = useState([]);
-  const [error, setError] = useState(null)
-
+  const [error, setError] = useState(null);
+  const [filter, setFilter]= useState('');
+  const [search, setSearch]= useState('');
+  const [sort, setSort]= useState('');
+  console.log(sort)
   useEffect(()=>{
     const fetchAllJobs = async()=>{
       try {
-        const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/jobs`);
+        const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/all-jobs?filter=${filter}&search=${search}&sort=${sort}`);
         setJobs(data);
         console.log(data)
       } catch (error) {
@@ -19,7 +22,12 @@ const AllJobs = () => {
       }
     }
     fetchAllJobs();
-  },[])
+  },[filter, search, sort])
+  const handleReset= () =>{
+    setFilter('');
+    setSearch('');
+    setSort('');
+  }
   if(error){
     return <p>{error}</p>
   }
@@ -31,7 +39,9 @@ const AllJobs = () => {
             <select
               name='category'
               id='category'
+              value={filter}
               className='border p-4 rounded-lg'
+              onChange={(e)=>setFilter(e.target.value)}
             >
               <option value=''>Filter By Category</option>
               <option value='Web Development'>Web Development</option>
@@ -40,12 +50,14 @@ const AllJobs = () => {
             </select>
           </div>
 
-          <form>
+          {/* <form> */}
             <div className='flex p-1 overflow-hidden border rounded-lg    focus-within:ring focus-within:ring-opacity-40 focus-within:border-blue-400 focus-within:ring-blue-300'>
               <input
                 className='px-6 py-2 text-gray-700 placeholder-gray-500 bg-white outline-none focus:placeholder-transparent'
                 type='text'
                 name='search'
+                defaultValue={search}
+                onBlur={(e)=>setSearch(e.target.value)}
                 placeholder='Enter Job Title'
                 aria-label='Enter Job Title'
               />
@@ -54,11 +66,13 @@ const AllJobs = () => {
                 Search
               </button>
             </div>
-          </form>
+          {/* </form> */}
           <div>
             <select
               name='category'
               id='category'
+              value={sort}
+              onChange={(e)=>setSort(e.target.value)}
               className='border p-4 rounded-md'
             >
               <option value=''>Sort By Deadline</option>
@@ -66,7 +80,7 @@ const AllJobs = () => {
               <option value='asc'>Ascending Order</option>
             </select>
           </div>
-          <button className='btn'>Reset</button>
+          <button onClick={handleReset} className='btn'>Reset</button>
         </div>
         <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
           {
